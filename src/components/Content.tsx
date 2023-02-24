@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { api } from '../services/api';
 import { MovieCard } from './MovieCard';
 
@@ -26,6 +26,10 @@ interface ContentProps {
 export function Content({ selectedGenreId, selectedGenre }: ContentProps) {
   const [movies, setMovies] = useState<MovieProps[]>([]);
 
+  const allMovies = useMemo(() => {
+    return movies;
+  }, [selectedGenre]);
+
   useEffect(() => {
     api
       .get<MovieProps[]>(`movies/?Genre_id=${selectedGenreId}`)
@@ -44,7 +48,7 @@ export function Content({ selectedGenreId, selectedGenre }: ContentProps) {
 
       <main>
         <div className="movies-list">
-          {movies.map(movie => (
+          {allMovies.map(movie => (
             <MovieCard
               key={movie.imdbID}
               title={movie.Title}
